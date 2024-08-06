@@ -45,8 +45,8 @@ public class RhythmGame : MonoBehaviour
         {
             if (_rhythm[i])
             {
-                // 30% 확률로 비트를 true
-                if (Random.Range(0, 100) < 30)
+                // 45% 확률로 비트를 true
+                if (Random.Range(0, 100) < 45)
                 {
                     _rhythm[i] = true;
                 }
