@@ -9,7 +9,6 @@ public class Clock : MonoBehaviour
     public float maxTime = 5f; // 최대 태엽시간
     public float currentTime = 0f; // 현재 태엽시간
     public bool isDecrease = true; // 태엽시간이 감소하는 경우 (게임 플레이 시 기본 상태) 
-    public bool isIncrease = false; // 태엽시간이 증가하는 경우 (isDecrease = false , 마우스 클릭 중)
     public bool isTimeUp = true; // 태엽시간 = 0
     public bool isFull = false; // 태엽시간 최대치 도달
 
