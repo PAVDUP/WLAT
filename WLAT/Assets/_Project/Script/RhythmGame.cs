@@ -23,6 +23,7 @@ public class RhythmGame : MonoBehaviour
     #region ComputerRhythm
     
     public Transform computerBeatVisualizer;
+    public UnityEvent onComputerInput;
 
     void GenerateRhythm()
     {
@@ -66,7 +67,8 @@ public class RhythmGame : MonoBehaviour
             if (_rhythm[i])
             {
                 audioSource.Play();
-                VisualizeBeat(0f, computerBeatVisualizer);
+                onComputerInput.Invoke();
+                VisualizeBeat(audioSource.clip.length/4f, computerBeatVisualizer);
             }
             else
             {
@@ -84,16 +86,19 @@ public class RhythmGame : MonoBehaviour
 
     #region PlayerRhythm
     
+    public Clock clock;
     public Transform playerBeatVisualizer;
     private bool _isPlayerInputChecked;
     private bool _isGameOver;
+    public UnityEvent onPlayerInput;
     
     void StartGame()
     {
         _currentBeat = 0;
         _nextBeatTime = Time.time;
-        _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2;
-        _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2;
+        var clip = audioSource.clip;
+        _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2 + clip.length/4f;
+        _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2 + clip.length/4f;
         _isPlaying = true;
     }
 
@@ -130,8 +135,12 @@ public class RhythmGame : MonoBehaviour
 
     void CheckPlayerInput()
     {
+        if (!clock.isDecrease)
+            return;
+        
         audioSource.Play();
-        VisualizeBeat(0, playerBeatVisualizer);
+        onPlayerInput.Invoke();
+        VisualizeBeat(audioSource.clip.length/4f, playerBeatVisualizer);
         
         if (!_isPlayerInputChecked)
             _isPlayerInputChecked = true;
