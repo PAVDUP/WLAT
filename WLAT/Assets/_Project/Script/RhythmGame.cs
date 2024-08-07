@@ -306,7 +306,7 @@ public class RhythmGame : MonoBehaviour
     private float _minCheckTime;
     private float _maxCheckTime;
     
-    void Start()
+    public void StartComputerPart()
     {
         _beatInterval = 60f / bpm;
         GenerateRhythm();
