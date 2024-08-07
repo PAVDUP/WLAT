@@ -74,6 +74,8 @@ public class RhythmGame : MonoBehaviour
                 }
             }
         }
+
+        _rhythm[0] = false;
     }
 
     IEnumerator PlayComputerRhythm()
@@ -325,6 +327,7 @@ public class RhythmGame : MonoBehaviour
     
     public void StartComputerPart()
     {
+        levelController = FindObjectOfType<LevelController>();
         _beatInterval = 60f / bpm;
         GenerateRhythm();
         StartCoroutine(PlayComputerRhythm());
@@ -334,6 +337,11 @@ public class RhythmGame : MonoBehaviour
     {
         if (_isPlaying)
         {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                CheckPlayerInput();
+            }
+            
             if (Time.time >= _maxCheckTime)
             {
                 CheckBeat();
@@ -341,11 +349,6 @@ public class RhythmGame : MonoBehaviour
                 _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2;
                 _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2;
                 _isPlayerInputChecked = false;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                CheckPlayerInput();
             }
         }
     }

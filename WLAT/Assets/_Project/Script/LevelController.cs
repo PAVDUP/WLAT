@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
     private int _progress = 1;
     private int _level = 0;
+    public TextMeshProUGUI progressText;
     
     public int Progress
     {
@@ -14,6 +16,8 @@ public class LevelController : MonoBehaviour
         set
         {
             _progress = value;
+            progressText.text = _progress.ToString();
+            
             foreach (var rhythmGame in _rhythmGames)
             {
                 rhythmGame.bpm += 5;
@@ -54,6 +58,13 @@ public class LevelController : MonoBehaviour
         _rhythmGames = FindObjectsOfType<RhythmGame>();
         _clock = FindObjectOfType<Clock>();
         originalMaxClockTime = _clock.maxTime;
+        
+        foreach (var rhythmGame in _rhythmGames)
+        {
+            rhythmGame.measurePossibilities = barPossibilities[0].barPossibility;
+            rhythmGame.beatPossibilities = beatPossibility[0];
+            _clock.maxTime = originalMaxClockTime;   
+        }
     }
 }
 
