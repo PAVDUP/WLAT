@@ -93,7 +93,7 @@ public class RhythmGame : MonoBehaviour
             {
                 audioSource.Play();
                 onComputerInput.Invoke();
-                VisualizeBeat(audioSource.clip.length/4f, computerBeatVisualizer);
+                VisualizeBeat(audioSource.clip.length/2f, computerBeatVisualizer);
             }
             else
             {
@@ -105,7 +105,9 @@ public class RhythmGame : MonoBehaviour
 
         if (mainGame)
             timingText.text = playerWaitTime.ToString(CultureInfo.InvariantCulture);
-
+        
+        StartGame();
+        
         yield return new WaitForSeconds(playerWaitTime/3);
    
         if (mainGame)
@@ -115,13 +117,12 @@ public class RhythmGame : MonoBehaviour
         
         if (mainGame)
             timingText.text = (playerWaitTime - 2*playerWaitTime/3).ToString(CultureInfo.InvariantCulture);
-    
+        
         yield return new WaitForSeconds(playerWaitTime/3);
         
         if (mainGame)
         {
             timingText.text = "!!!";
-            StartGame();
         }
     }
     
@@ -143,11 +144,18 @@ public class RhythmGame : MonoBehaviour
     void StartGame()
     {
         _currentBeat = 0;
-        _nextBeatTime = Time.time;
+        _nextBeatTime = Time.time + playerWaitTime;
         var clip = audioSource.clip;
-        _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2 + clip.length/4f;
-        _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2 + clip.length/4f;
+        _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2 + clip.length/2f;
+        _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2 + clip.length/2f;
         _isPlaying = true;
+        StartCoroutine(StartBasicRhythmWithDelayed(playerWaitTime));
+    }
+    
+    IEnumerator StartBasicRhythmWithDelayed(float time)
+    {
+        yield return new WaitForSeconds(time);
+        
         _basicRhythmCoroutine = StartCoroutine(StartBasicRhythm());
     }
 
@@ -192,7 +200,7 @@ public class RhythmGame : MonoBehaviour
         
         audioSource.Play();
         onPlayerInput.Invoke();
-        VisualizeBeat(audioSource.clip.length/4f, playerBeatVisualizer);
+        VisualizeBeat(audioSource.clip.length/2f, playerBeatVisualizer);
         
         if (!_isPlayerInputChecked)
             _isPlayerInputChecked = true;
