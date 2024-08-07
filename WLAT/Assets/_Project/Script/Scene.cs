@@ -5,30 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class Scene : MonoBehaviour
 {
-    RhythmGame rhythm;
-    public bool isStart;
-
     void Awake()
     {
-        rhythm = GetComponent<RhythmGame>();
+        
     }
 
-    void Update()
+    public void GameStartScene()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            SceneManager.LoadScene("MainScene");
-        }       
+        SceneManager.LoadScene("MainScene");
     }
 
     public void GameOverScene()
     {
         SceneManager.LoadScene("GameOverTest");
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            SceneManager.LoadScene("MainScene");
-        }
     }
 
 }
