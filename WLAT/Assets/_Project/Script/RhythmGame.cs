@@ -228,17 +228,17 @@ public class RhythmGame : MonoBehaviour
             return;
         }
         
-        if (Time.time >= _minCheckTime && Time.time <= _maxCheckTime)
-        {
+        /*if (Time.time >= _minCheckTime && Time.time <= _maxCheckTime)
+        {*/
             if (!_rhythm[_currentBeat])
             {
                 GameOver();
-            }
+            }/*
         }
         else
         {
             GameOver();
-        }
+        }*/
     }
 
     void GameOver()
