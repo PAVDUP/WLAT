@@ -110,7 +110,7 @@ public class RhythmGame : MonoBehaviour
             {
                 audioSource.Play();
                 onComputerInput.Invoke();
-                VisualizeBeat(audioSource.clip.length/2f, computerBeatVisualizer);
+                VisualizeBeat(0, computerBeatVisualizer);
             }
             else
             {
@@ -162,9 +162,8 @@ public class RhythmGame : MonoBehaviour
     {
         _currentBeat = 0;
         _nextBeatTime = Time.time + playerWaitTime;
-        var clip = audioSource.clip;
-        _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2 + clip.length/2f;
-        _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2 + clip.length/2f;
+        _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2;
+        _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2;
         _isPlaying = true;
         StartCoroutine(StartBasicRhythmWithDelayed(playerWaitTime));
     }
@@ -219,7 +218,7 @@ public class RhythmGame : MonoBehaviour
         
         audioSource.Play();
         onPlayerInput.Invoke();
-        VisualizeBeat(audioSource.clip.length/2f, playerBeatVisualizer);
+        VisualizeBeat(0, playerBeatVisualizer);
         
         if (!_isPlayerInputChecked)
             _isPlayerInputChecked = true;
@@ -363,8 +362,6 @@ public class RhythmGame : MonoBehaviour
     
     IEnumerator StartBasicRhythm()
     {
-        yield return new WaitForSeconds(audioSource.clip.length / 4f);
-        
         for (int i = 0; i < _totalBeats; i++)
         {
             basicAudioSource.Play();
