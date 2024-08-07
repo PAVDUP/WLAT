@@ -5,6 +5,7 @@ using UnityEngine;
 public class Clock : MonoBehaviour
 {
     public Transform target;
+    public AudioSource sound;
 
     public float maxTime = 5f; // 최대 태엽시간
     public float currentTime = 0f; // 현재 태엽시간
@@ -15,6 +16,20 @@ public class Clock : MonoBehaviour
     void Awake()
     {
         target = GetComponent<Transform>();
+        sound = this.GetComponent<AudioSource>();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            sound.Play();
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            sound.Stop();
+        }
     }
 
     void FixedUpdate()
@@ -28,7 +43,7 @@ public class Clock : MonoBehaviour
 
         else isDecrease = true;
 
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             
             isDecrease = false;
@@ -37,6 +52,7 @@ public class Clock : MonoBehaviour
             {
                 currentTime += Time.fixedDeltaTime;
                 transform.RotateAround(target.position, Vector3.forward, -(360 / maxTime) * Time.fixedDeltaTime);
+                
             }
 
             if (currentTime >= maxTime)
