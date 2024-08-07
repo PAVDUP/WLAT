@@ -13,8 +13,8 @@ public class RhythmGame : MonoBehaviour
     
     public AudioSource audioSource;
     public float bpm = 120f;
-    public int minMeasures = 1;
-    public int maxMeasures = 4;
+    [HideInInspector] public int[] measurePossibilities;
+    [HideInInspector] public Vector2 beatPossibilities;
     public float threshold = 0.1f;
 
     private List<bool> _rhythm;
@@ -33,7 +33,20 @@ public class RhythmGame : MonoBehaviour
     
     void GenerateRhythm()
     {
-        int measures = Random.Range(minMeasures, maxMeasures + 1);
+        int randomValue = Random.Range(0, 101);
+        int measures = 0;
+        int stackedValue = 0;
+        
+        for (int i = 0 ; i < measurePossibilities.Length; i++)
+        {
+            stackedValue += measurePossibilities[i];
+            if (randomValue <= stackedValue)
+            {
+                measures = i + 1;
+                break;
+            }
+        }
+        
         _totalBeats = measures * 4;
         _rhythm = new List<bool>(_totalBeats);
 
@@ -48,12 +61,14 @@ public class RhythmGame : MonoBehaviour
             _rhythm[beatIndex] = true;
         }
 
+        var beatPossibility = Random.Range(beatPossibilities.x, beatPossibilities.y);
+        
         for (int i = 0; i < _totalBeats; i++)
         {
             if (!_rhythm[i])
             {
                 // 45% 확률로 비트를 true
-                if (Random.Range(0, 100) < 45)
+                if (Random.Range(0, 100) < beatPossibility)
                 {
                     _rhythm[i] = true;
                 }
@@ -182,6 +197,8 @@ public class RhythmGame : MonoBehaviour
 
             if (!_isGameOver)
             {
+                levelController.Progress++;
+                
                 // !!!!! Re generate rhythm
                 GenerateRhythm();
                 StartCoroutine(PlayComputerRhythm());
@@ -336,9 +353,10 @@ public class RhythmGame : MonoBehaviour
     #region Show Timing in Main Game
 
     [Header("Main Game Features")]
+    public LevelController levelController;
     public TextMeshProUGUI timingText;
     public AudioSource basicAudioSource;
-   private Coroutine _basicRhythmCoroutine;
+    private Coroutine _basicRhythmCoroutine;
     
     IEnumerator StartBasicRhythm()
     {
