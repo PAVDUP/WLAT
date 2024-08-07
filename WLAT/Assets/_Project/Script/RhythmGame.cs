@@ -1,12 +1,16 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Utils;
 
 public class RhythmGame : MonoBehaviour
 {
+    public bool mainGame = false;
+    
     public AudioSource audioSource;
     public float bpm = 120f;
     public int minMeasures = 1;
@@ -22,9 +26,11 @@ public class RhythmGame : MonoBehaviour
 
     #region ComputerRhythm
     
+    [Header("ComputerRhythm")]
+    public float computerWaitTime = 3f;
     public Transform computerBeatVisualizer;
     public UnityEvent onComputerInput;
-
+    
     void GenerateRhythm()
     {
         int measures = Random.Range(minMeasures, maxMeasures + 1);
@@ -44,7 +50,7 @@ public class RhythmGame : MonoBehaviour
 
         for (int i = 0; i < _totalBeats; i++)
         {
-            if (_rhythm[i])
+            if (!_rhythm[i])
             {
                 // 45% 확률로 비트를 true
                 if (Random.Range(0, 100) < 45)
@@ -60,7 +66,26 @@ public class RhythmGame : MonoBehaviour
         // Reset visualizer
         ResetVisualizer();
         
-        yield return new WaitForSeconds(3f);
+        if (mainGame)
+            timingText.text = computerWaitTime.ToString(CultureInfo.InvariantCulture);
+
+        yield return new WaitForSeconds(computerWaitTime/3);
+   
+        if (mainGame)
+            timingText.text = (computerWaitTime - computerWaitTime/3).ToString(CultureInfo.InvariantCulture);
+        
+        yield return new WaitForSeconds(computerWaitTime/3);
+        
+        if (mainGame)
+            timingText.text = (computerWaitTime - 2*computerWaitTime/3).ToString(CultureInfo.InvariantCulture);
+    
+        yield return new WaitForSeconds(computerWaitTime/3);
+        
+        if (mainGame)
+            timingText.text = "!!!";
+
+        if (mainGame)
+            StartCoroutine(StartBasicRhythm());
         
         for (int i = 0; i < _totalBeats; i++)
         {
@@ -78,13 +103,36 @@ public class RhythmGame : MonoBehaviour
             yield return new WaitForSeconds(_beatInterval);
         }
 
-        yield return new WaitForSeconds(3f);
-        StartGame();
+        if (mainGame)
+            timingText.text = playerWaitTime.ToString(CultureInfo.InvariantCulture);
+
+        yield return new WaitForSeconds(playerWaitTime/3);
+   
+        if (mainGame)
+            timingText.text = (playerWaitTime - playerWaitTime/3).ToString(CultureInfo.InvariantCulture);
+        
+        yield return new WaitForSeconds(playerWaitTime/3);
+        
+        if (mainGame)
+            timingText.text = (playerWaitTime - 2*playerWaitTime/3).ToString(CultureInfo.InvariantCulture);
+    
+        yield return new WaitForSeconds(playerWaitTime/3);
+        
+        if (mainGame)
+        {
+            timingText.text = "!!!";
+            StartGame();
+        }
     }
+    
+    
     
     #endregion
 
     #region PlayerRhythm
+    
+    [Header("PlayerRhythm")]
+    public float playerWaitTime = 3f;
     
     public Clock clock;
     public Transform playerBeatVisualizer;
@@ -100,6 +148,7 @@ public class RhythmGame : MonoBehaviour
         _minCheckTime = _nextBeatTime - _beatInterval * playerInputThreshold / 2 + clip.length/4f;
         _maxCheckTime = _nextBeatTime + _beatInterval * playerInputThreshold / 2 + clip.length/4f;
         _isPlaying = true;
+        _basicRhythmCoroutine = StartCoroutine(StartBasicRhythm());
     }
 
     void CheckBeat()
@@ -119,6 +168,9 @@ public class RhythmGame : MonoBehaviour
         if (_currentBeat >= _totalBeats)
         {
             _isPlaying = false;
+            
+            if (_basicRhythmCoroutine != null)
+                StopCoroutine(_basicRhythmCoroutine);
 
             if (!_isGameOver)
             {
@@ -272,4 +324,25 @@ public class RhythmGame : MonoBehaviour
             }
         }
     }
+
+    #region Show Timing in Main Game
+
+    [Header("Main Game Features")]
+    public TextMeshProUGUI timingText;
+    public AudioSource basicAudioSource;
+   private Coroutine _basicRhythmCoroutine;
+    
+    IEnumerator StartBasicRhythm()
+    {
+        yield return new WaitForSeconds(audioSource.clip.length / 4f);
+        
+        for (int i = 0; i < _totalBeats; i++)
+        {
+            basicAudioSource.Play();
+            
+            yield return new WaitForSeconds(_beatInterval);
+        }
+    }
+
+    #endregion
 }
