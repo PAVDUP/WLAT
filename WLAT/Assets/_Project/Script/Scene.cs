@@ -10,6 +10,11 @@ public class Scene : MonoBehaviour
         
     }
 
+    public void GameStart()
+    {
+        SceneManager.LoadScene("GameStartScene");
+    }
+    
     public void GameStartScene()
     {
         SceneManager.LoadScene("MainScene");
