@@ -12,7 +12,7 @@ public class Scene : MonoBehaviour
 
     public void GameStart()
     {
-        SceneManager.LoadScene("GameStartScene");
+        SceneManager.LoadScene("GameStartTest");
     }
     
     public void GameStartScene()
