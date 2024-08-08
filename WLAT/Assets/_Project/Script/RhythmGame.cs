@@ -80,6 +80,8 @@ public class RhythmGame : MonoBehaviour
 
     IEnumerator PlayComputerRhythm()
     {
+        yield return new WaitForSeconds(0.2f);
+        
         // Reset visualizer
         ResetVisualizer();
         
